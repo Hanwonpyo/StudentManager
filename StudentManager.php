@@ -23,7 +23,7 @@ class Student
 $Menu=$_POST['Menu'];
 $Name=$_POST['name'];
 $Age=$_POST['age'];
-$School=$_POST['school'];\
+$School=$_POST['school'];
 
 $S = array(new Student(Name,Age,School));
 
@@ -42,6 +42,7 @@ if(strcmp($Menu,"Add")==0) {
 }
 else if(strcmp($Menu,"Delete")==0) {
 	$k=0;
+	$count=0;
 	$handle=fopen($fp,"r");
 	while(!feof($handle)) {
 		$buffer=fgetc($handle);
@@ -49,6 +50,8 @@ else if(strcmp($Menu,"Delete")==0) {
 			$str=explode(" ",$temp);
 			array_push($S,new Student($str[0],$str[1],$str[2]));
 			$temp=$null;
+			$count++;
+
 		}
 		else {
 			$temp=$temp.$buffer;
@@ -56,7 +59,7 @@ else if(strcmp($Menu,"Delete")==0) {
 	}
 	fclose($handle);
 	$handle = fopen($fp,"w+");
-	for($i=1;$i<strlen($S);$i++) {
+	for($i=1;$i<=$count;$i++) {
 		if(strcmp($Name,$S[$i]->get_name())==0) {
 			$k=$i;
 			echo "Delete Complete<br>";
@@ -67,7 +70,7 @@ else if(strcmp($Menu,"Delete")==0) {
 		echo "Delete Fail<br>";
 	}
 	else {
-		for($i=1;$i<strlen($S);$i++) {
+		for($i=1;$i<=$count;$i++) {
 			if($k==$i) continue;
 			else {
 				fwrite($handle,$S[$i]->name);
@@ -96,6 +99,7 @@ else if(strcmp($Menu,"List")==0) {
 }
 else if(strcmp($Menu,"Sort")==0) {
 	$temp=$null;
+	$count=0;
 	$handle = fopen($fp,"r");
 	while(!feof($handle)) {
 		$buffer=fgetc($handle);
@@ -103,12 +107,13 @@ else if(strcmp($Menu,"Sort")==0) {
 			$str=explode(" ",$temp);
 			array_push($S,new Student($str[0],$str[1],$str[2]));
 			$temp=$null;
+			$count++;
 		}
 		else {
 			$temp=$temp.$buffer;
 		}
 	}
-	for($i=1;$i<strlen($S);$i++) {
+	for($i=1;$i<=$count;$i++) {
 		for($j=$i+1;$j<strlen($S);$j++) {
 			if(($S[$i]->name)>($S[$j]->name)) {
 				$c=$S[$i]->name;
@@ -125,7 +130,7 @@ else if(strcmp($Menu,"Sort")==0) {
 	}
 	fclose($handle);
 	$handle = fopen($fp,"w+");
-	for($i=1;$i<strlen($S);$i++) {
+	for($i=1;$i<=$count;$i++) {
 		fwrite($handle,$S[$i]->name);
 		fwrite($handle," ");
 		fwrite($handle,$S[$i]->age);
@@ -136,10 +141,11 @@ else if(strcmp($Menu,"Sort")==0) {
 }
 else {
 	echo "Thank you for using this ^^";
+	$handle = fopen($fp,"w+");
+	fclose($handle);
 	exit;
 }
 
 echo("<br><a href='./menu.html'>Back Page</a>");
 
 ?>
-
